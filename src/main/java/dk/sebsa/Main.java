@@ -52,7 +52,7 @@ public class Main extends Application {
     @Override
     public void process() {
         // Welcome state
-        if(Wizard.currentProject == null) welcomeScreen.render();
+        if(!Wizard.projectLoaded()) welcomeScreen.render();
 
         // Menubar
         ImGui.beginMainMenuBar();
@@ -66,12 +66,14 @@ public class Main extends Application {
             }
 
             if(ImGui.menuItem("Create a new Project")) createProject.set(true);
-            if(ImGui.menuItem("Close Project")) Wizard.currentProject = null;
+            if(ImGui.menuItem("Close Project")) try { Wizard.unloadProject(); } catch (IOException e) {
+                ImGUIUtils.errorPopup("Failed to save project to disk");
+            }
             if(ImGui.menuItem("Quit")) quit();
             ImGui.endMenu();
         }
 
-        if(Wizard.currentProject != null) {
+        if(Wizard.projectLoaded()) {
             if(ImGui.beginMenu("Windows")) {
                 ImGui.menuItem("Versioning & Export", null, windowVersion);
                 ImGui.menuItem("Command History", null, windowCommandHistory);
@@ -81,7 +83,7 @@ public class Main extends Application {
                 ImGui.endMenu();
             }
 
-            ImGui.text("Editing " + Wizard.currentProject.getName() + ", by " + Wizard.currentProject.getAuthor());
+            ImGui.text("Editing " + Wizard.getCurrentProject().getName() + ", by " + Wizard.getCurrentProject().getAuthor());
         }
         ImGui.endMainMenuBar();
 
@@ -103,6 +105,6 @@ public class Main extends Application {
     @SneakyThrows
     @Override
     protected void postRun() {
-        if(Wizard.currentProject != null) Wizard.currentProject.saveToDisk();
+        if(Wizard.projectLoaded()) { Wizard.unloadProject(); }
     }
 }

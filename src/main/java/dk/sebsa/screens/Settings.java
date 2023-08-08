@@ -23,7 +23,7 @@ public class Settings extends Window {
     public void draw() {
         ImGui.text("Acceptable Versions");
         ImGui.inputText("##", inputVersion);
-        List<String> mcVersions = Wizard.currentProject.getMcVersions();
+        List<String> mcVersions = Wizard.getCurrentProject().getMcVersions();
 
         ImGui.beginDisabled(!inputVersion.get().matches("[0-9](\\.[0-9]+)+") || mcVersions.contains(inputVersion.get()));
         if(ImGui.button("Add")) {

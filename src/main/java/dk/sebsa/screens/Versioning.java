@@ -19,7 +19,7 @@ public class Versioning extends Window {
 
     @Override
     public void draw() {
-        ImGui.text("Working on: " + Wizard.currentProject.getVersion());
+        ImGui.text("Working on: " + Wizard.getCurrentProject().getVersion());
         ImGui.inputText("##", new ImString("1.0.0"));
         ImGui.sameLine();
         if(ImGui.button("Set")) {

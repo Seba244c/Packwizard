@@ -33,10 +33,6 @@ public class Project {
         reloadFromDisk();
     }
 
-    public void saveToDisk() throws IOException {
-        Changelog.save(dir);
-    }
-
     public void reloadFromDisk() throws IOException {
         mods = new ArrayList<>();
         overrides = new ArrayList<>();

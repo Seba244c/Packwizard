@@ -70,7 +70,7 @@ public class AddContent extends Window {
 
                     // Install
                     ImGui.tableNextColumn();
-                    ImGui.beginDisabled(Wizard.currentProject.getModIds().contains(queryProjectId));
+                    ImGui.beginDisabled(Wizard.getCurrentProject().getModIds().contains(queryProjectId));
                     if(ImGui.button("Details##"+ queryProjectId)) {
                         ImGUIUtils.errorPopup("Coming soon (TM)");
                     } ImGui.sameLine();
@@ -99,7 +99,7 @@ public class AddContent extends Window {
 
     private void query() {
         try {
-            query = APIUtils.labrinthSearchProjects(searchInput.get(), page*5, Wizard.currentProject.getMcVersions().toArray(new String[0]), Wizard.currentProject.getLoader());
+            query = APIUtils.labrinthSearchProjects(searchInput.get(), page*5, Wizard.getCurrentProject().getMcVersions().toArray(new String[0]), Wizard.getCurrentProject().getLoader());
             countString = "Showing " + (query.getJSONArray("hits").length() + page*5) + " out of " + query.getInt("total_hits");
         } catch (Exception e) { ImGUIUtils.errorPopup(e.getClass().getName() + " when getting search results:", e); }
     }

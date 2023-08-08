@@ -29,7 +29,7 @@ public class Content extends Window {
             ImGui.tableSetupColumn("Action");
             ImGui.tableHeadersRow();
 
-            for(Project.Mod mod : Wizard.currentProject.getMods()) {
+            for(Project.Mod mod : Wizard.getCurrentProject().getMods()) {
                 ImGui.tableNextColumn();
                 ImGui.text(mod.name());
                 ImGui.tableNextColumn();

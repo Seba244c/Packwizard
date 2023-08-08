@@ -8,12 +8,10 @@ import dk.sebsa.utils.ImGUIUtils;
 import dk.sebsa.utils.Utils;
 import imgui.ImGui;
 import imgui.type.ImBoolean;
+import lombok.Getter;
 import lombok.SneakyThrows;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,12 +24,36 @@ import java.util.regex.Pattern;
  */
 public class Wizard {
     private static final List<String> commandLog = new ArrayList<>();
-    public static Project currentProject = null;
+    @Getter private static Project currentProject = null;
+    public static boolean projectLoaded() { return currentProject != null; }
 
     // LIB FILE
     private static final Map<String, File> libFiles = new HashMap<>();
     private static String packwizPath;
     private static String gitPath;
+
+    public static void unloadProject() throws IOException {
+        // Save main state
+        File changesFile = new File(currentProject.dir.getPath()+"/.packwiz_state.txt");
+        FileWriter myWriter = new FileWriter(changesFile);
+        StringBuilder sb = new StringBuilder();
+        sb.append(Main.windowContent.get()).append(",");
+        sb.append(Main.windowSettings.get()).append(",");
+        sb.append(Main.windowAddContent.get()).append(",");
+        sb.append(Main.windowVersion.get());
+        myWriter.write(sb.toString());
+        myWriter.close();
+
+        // Unload Main
+        Main.windowContent.set(false);
+        Main.windowSettings.set(false);
+        Main.windowAddContent.set(false);
+        Main.windowVersion.set(false);
+
+        // Save changelog
+        Changelog.save(currentProject.dir);
+        currentProject = null;
+    }
 
     public static Window init() {
         // Load lib files
@@ -81,8 +103,7 @@ public class Wizard {
     public static void openProject(File dir) throws IOException {
         if(currentProject!=null) {
             try {
-                currentProject.saveToDisk();
-                currentProject = null;
+                unloadProject();
             } catch (IOException e) {
                 ImGUIUtils.errorPopup("Failed to save project to disk");
                 return;
@@ -90,6 +111,18 @@ public class Wizard {
         }
 
         currentProject = new Project(dir);
+
+        // Load main state
+        File changesFile = new File(currentProject.dir.getPath()+"/.packwiz_state.txt");
+        if(changesFile.exists()) {
+            String[] bools = FileUtils.readAllLinesList(FileUtils.loadFile(changesFile.getPath())).get(0).split(",");
+            for(int i = 0; i < bools.length; i++) {
+                if(i==0) Main.windowContent.set(Boolean.parseBoolean(bools[i]));
+                else if(i==1) Main.windowSettings.set(Boolean.parseBoolean(bools[i]));
+                else if(i==2) Main.windowAddContent.set(Boolean.parseBoolean(bools[i]));
+                else if(i==3) Main.windowVersion.set(Boolean.parseBoolean(bools[i]));
+            }
+        }
     }
 
     public static String logCommandC(String command, File dir) {
