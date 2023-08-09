@@ -5,6 +5,7 @@ import dk.sebsa.Wizard;
 import dk.sebsa.utils.APIUtils;
 import dk.sebsa.utils.ImGUIUtils;
 import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
@@ -30,7 +31,7 @@ public class AddContent extends Window {
 
     @Override
     public void draw() {
-        ImGui.inputText("##", searchInput);
+        ImGui.inputText("##", searchInput, ImGuiInputTextFlags.CallbackResize);
         ImGui.sameLine();
         ImGui.beginDisabled(searchInput.getLength()<2);
         if(ImGui.button("Search")) {

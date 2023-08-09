@@ -5,6 +5,7 @@ import dk.sebsa.enums.ModLoaders;
 import dk.sebsa.loader.LoaderAPI;
 import dk.sebsa.utils.Utils;
 import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
@@ -34,11 +35,11 @@ public class CreateProject extends Window {
             browseString.set(Utils.pickFolderDialog());
         }
         ImGui.sameLine();
-        ImGui.inputText("Folder Path", browseString);
+        ImGui.inputText("Folder Path", browseString, ImGuiInputTextFlags.CallbackResize);
         // Other project info
-        ImGui.inputText("Project Name", projectName);
-        ImGui.inputText("Project Version", startingVersion);
-        ImGui.inputText("Author", author);
+        ImGui.inputText("Project Name", projectName, ImGuiInputTextFlags.CallbackResize);
+        ImGui.inputText("Project Version", startingVersion, ImGuiInputTextFlags.CallbackResize);
+        ImGui.inputText("Author", author, ImGuiInputTextFlags.CallbackResize);
         ImGui.inputText("MC Version", mcVersion);
         ImGui.combo("ModLoader", modLoader, Utils.enumStrings(ModLoaders.class));
 

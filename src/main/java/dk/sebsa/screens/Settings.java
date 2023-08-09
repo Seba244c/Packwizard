@@ -2,6 +2,7 @@ package dk.sebsa.screens;
 
 import dk.sebsa.Wizard;
 import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
@@ -22,7 +23,7 @@ public class Settings extends Window {
     @Override
     public void draw() {
         ImGui.text("Acceptable Versions");
-        ImGui.inputText("##", inputVersion);
+        ImGui.inputText("##", inputVersion, ImGuiInputTextFlags.CallbackResize);
         List<String> mcVersions = Wizard.getCurrentProject().getMcVersions();
 
         ImGui.beginDisabled(!inputVersion.get().matches("[0-9](\\.[0-9]+)+") || mcVersions.contains(inputVersion.get()));
